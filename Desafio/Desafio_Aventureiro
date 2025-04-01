@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+void removerSeparadores(char* str) {
+    char temp[strlen(str) + 1];
+    int j = 0;
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] != '.' && str[i] != ',') {  // Remover ponto e vírgula
+            temp[j++] = str[i];
+        }
+    }
+    temp[j] = '\0';  // Adicionar o final da string
+    strcpy(str, temp);
+}
+
+// Função para entrada de dados de uma cidade
+void entradaCidade(char *estado, char *codigo, char *nomeCidade, float *populacao, float *area, float *pib, int *pontosTuristicos) {
+    printf("Digite a letra do estado (A-H): ");
+    scanf(" %c", estado);
+    
+    printf("Digite o código da cidade (ex: A01): ");
+    scanf(" %s", codigo);
+    
+    printf("Digite o nome da cidade: ");
+    scanf(" %49[^\n]", nomeCidade);  // Para permitir espaços no nome da cidade
+    
+    char strPopulacao[50], strArea[50], strPib[50];
+    
+    printf("Digite a população da cidade: ");
+    scanf(" %s", strPopulacao);
+    removerSeparadores(strPopulacao);  // Remover pontos e vírgulas
+    *populacao = strtof(strPopulacao, NULL);
+    
+    printf("Digite a área da cidade (km²): ");
+    scanf(" %s", strArea);
+    removerSeparadores(strArea);  // Remover pontos e vírgulas
+    *area = strtof(strArea, NULL);
+    
+    printf("Digite o PIB da cidade (em bilhões de reais): ");
+    scanf(" %s", strPib);
+    removerSeparadores(strPib);  // Remover pontos e vírgulas
+    *pib = strtof(strPib, NULL);
+    
+    printf("Digite o número de pontos turísticos: ");
+    scanf(" %d", pontosTuristicos);
+}
+
+// Função para exibir os dados da cidade
+void exibirCidade(char estado, char *codigo, char *nomeCidade, float populacao, float area, float pib, int pontosTuristicos) {
+    // Cálculos adicionais
+    float densidadePopulacional = populacao / area;  // Densidade populacional (hab/km²)
+    float pibPerCapita = pib * 1e9 / populacao;  // PIB per capita (em reais)
+    
+    printf("\nCidade: %s (%s, %c)\n", nomeCidade, codigo, estado);
+    printf("População: %.0f habitantes\n", populacao);  // Exibição sem casas decimais
+    printf("Área: %.2f km²\n", area);
+    printf("PIB: %.2f bilhões de reais\n", pib);
+    printf("Pontos turísticos: %d\n", pontosTuristicos);
+    printf("Densidade Populacional: %.2f hab/km²\n", densidadePopulacional);  // Exibindo densidade
+    printf("PIB per Capita: %.2f reais\n", pibPerCapita);  // Exibindo PIB per capita
+}
+
+int main() {
+    // Variáveis para a primeira cidade
+    char estado1;
+    char codigo1[4];
+    char nomeCidade1[50];
+    float populacao1;
+    float area1;
+    float pib1;
+    int pontosTuristicos1;
+    
+    // Variáveis para a segunda cidade
+    char estado2;
+    char codigo2[4];
+    char nomeCidade2[50];
+    float populacao2;
+    float area2;
+    float pib2;
+    int pontosTuristicos2;
+    
+    // Entrada de dados para as cidades
+    printf("Digite os dados para a primeira cidade:\n");
+    entradaCidade(&estado1, codigo1, nomeCidade1, &populacao1, &area1, &pib1, &pontosTuristicos1);
+    
+    printf("\nDigite os dados para a segunda cidade:\n");
+    entradaCidade(&estado2, codigo2, nomeCidade2, &populacao2, &area2, &pib2, &pontosTuristicos2);
+    
+    // Exibição das informações
+    printf("\n--- Resultados ---\n");
+    printf("Carta 1:\n");
+    exibirCidade(estado1, codigo1, nomeCidade1, populacao1, area1, pib1, pontosTuristicos1);
+    
+    printf("\nCarta 2:\n");
+    exibirCidade(estado2, codigo2, nomeCidade2, populacao2, area2, pib2, pontosTuristicos2);
+    
+    return 0;
+}
