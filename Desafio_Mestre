@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// Remover pontos e vírgulas de uma string
+void removerSeparadores(char* str) {
+    char temp[strlen(str) + 1];
+    int j = 0;
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] != '.' && str[i] != ',') {
+            temp[j++] = str[i];
+        }
+    }
+    temp[j] = '\0';
+    strcpy(str, temp);
+}
+
+// Entrada de dados de uma cidade
+void entradaCidade(char *estado, char *codigo, char *nomeCidade, float *populacao, float *area, float *pib, int *pontosTuristicos) {
+    printf("Digite a letra do estado (A-H): ");
+    scanf(" %c", estado);
+
+    printf("Digite o código da cidade (ex: A01): ");
+    scanf(" %s", codigo);
+
+    printf("Digite o nome da cidade: ");
+    scanf(" %49[^\n]", nomeCidade);
+
+    char strPopulacao[50], strArea[50], strPib[50];
+
+    printf("Digite a população da cidade: ");
+    scanf(" %s", strPopulacao);
+    removerSeparadores(strPopulacao);
+    *populacao = strtof(strPopulacao, NULL);
+
+    printf("Digite a área da cidade (km²): ");
+    scanf(" %s", strArea);
+    removerSeparadores(strArea);
+    *area = strtof(strArea, NULL);
+
+    printf("Digite o PIB da cidade (em bilhões de reais): ");
+    scanf(" %s", strPib);
+    removerSeparadores(strPib);
+    *pib = strtof(strPib, NULL);
+
+    printf("Digite o número de pontos turísticos: ");
+    scanf(" %d", pontosTuristicos);
+}
+
+// Exibição dos dados da cidade
+void exibirCidade(char estado, char *codigo, char *nomeCidade, float populacao, float area, float pib, int pontosTuristicos) {
+    float densidadePopulacional = populacao / area;
+    float pibPerCapita = pib * 1e9 / populacao;
+
+    printf("\nCidade: %s (%s, %c)\n", nomeCidade, codigo, estado);
+    printf("População: %.0f habitantes\n", populacao);
+    printf("Área: %.2f km²\n", area);
+    printf("PIB: %.2f bilhões de reais\n", pib);
+    printf("Pontos turísticos: %d\n", pontosTuristicos);
+    printf("Densidade Populacional: %.2f hab/km²\n", densidadePopulacional);
+    printf("PIB per Capita: %.2f reais\n", pibPerCapita);
+}
+
+// Função para contar vitórias em comparação
+int comparar(float a, float b) {
+    return (a > b) ? 1 : (b > a) ? -1 : 0;
+}
+
+int main() {
+    // Dados da primeira cidade
+    char estado1, codigo1[4], nomeCidade1[50];
+    float populacao1, area1, pib1;
+    int pontosTuristicos1;
+
+    // Dados da segunda cidade
+    char estado2, codigo2[4], nomeCidade2[50];
+    float populacao2, area2, pib2;
+    int pontosTuristicos2;
+
+    // Entrada dos dados
+    printf("Digite os dados para a primeira cidade:\n");
+    entradaCidade(&estado1, codigo1, nomeCidade1, &populacao1, &area1, &pib1, &pontosTuristicos1);
+
+    printf("\nDigite os dados para a segunda cidade:\n");
+    entradaCidade(&estado2, codigo2, nomeCidade2, &populacao2, &area2, &pib2, &pontosTuristicos2);
+
+    // Cálculo de atributos derivados
+    float densidade1 = populacao1 / area1;
+    float densidade2 = populacao2 / area2;
+    float pibPerCapita1 = pib1 * 1e9 / populacao1;
+    float pibPerCapita2 = pib2 * 1e9 / populacao2;
+
+    // Exibição
+    printf("\n--- Resultados ---\n");
+    printf("Carta 1:\n");
+    exibirCidade(estado1, codigo1, nomeCidade1, populacao1, area1, pib1, pontosTuristicos1);
+
+    printf("\nCarta 2:\n");
+    exibirCidade(estado2, codigo2, nomeCidade2, populacao2, area2, pib2, pontosTuristicos2);
+
+    // Comparações
+    int vitorias1 = 0;
+    int vitorias2 = 0;
+
+    int resultado;
+
+    resultado = comparar(populacao1, populacao2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    resultado = comparar(area1, area2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    resultado = comparar(pib1, pib2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    resultado = comparar(pontosTuristicos1, pontosTuristicos2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    resultado = comparar(densidade1, densidade2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    resultado = comparar(pibPerCapita1, pibPerCapita2);
+    vitorias1 += (resultado == 1);
+    vitorias2 += (resultado == -1);
+
+    // Exibição dos resultados das comparações
+    printf("\n--- Comparação ---\n");
+    printf("Vitórias da Carta 1: %d\n", vitorias1);
+    printf("Vitórias da Carta 2: %d\n", vitorias2);
+
+    printf("\n--- Super Poder ---\n");
+    (vitorias1 > vitorias2) ? printf("Carta 1 é a vencedora geral com Super Poder!\n") :
+    (vitorias2 > vitorias1) ? printf("Carta 2 é a vencedora geral com Super Poder!\n") :
+    printf("Empate! Nenhuma carta possui Super Poder.\n");
+
+    return 0;
+}
